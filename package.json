@@ -27,7 +27,7 @@
     "PWA"
   ],
   "author": "Kapelianovych Yevhen",
-  "license": "MIT",
+  "license": "ISC",
   "peerDependencies": {
     "chalk": "^4.1.0",
     "workbox-build": "^6.1.2"
