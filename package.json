@@ -19,7 +19,7 @@
     "copy:package": "cpy package.json build",
     "copy:readme": "cpy README.md build",
     "copy:license": "cpy LICENSE build",
-    "release": "npm run build; npm publish build --access public"
+    "release": "npm run build; npm publish build/ --access public"
   },
   "keywords": [
     "Eleventy",
