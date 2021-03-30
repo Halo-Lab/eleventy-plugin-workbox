@@ -83,3 +83,7 @@ interface EleventyPluginWorkboxOptions {
 ## Word from author
 
 Have fun! ✌️
+
+<a href="https://www.halo-lab.com/?utm_source=github-brifinator-3000">
+    <img src="https://api.halo-lab.com/wp-content/uploads/dev_halo.svg" alt="Developed in Halo lab" height="60">
+</a>
