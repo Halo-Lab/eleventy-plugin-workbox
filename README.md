@@ -69,6 +69,8 @@ interface EleventyPluginWorkboxOptions {
 
 1. This plugin uses [`workbox`](https://developers.google.com/web/tools/workbox/) to cache assets.
 
+   > _Assets_ is all HTML files, JavaScript, CSS, JSON, images and fonts. For detailed list of file extensions check `src/constants.ts`.
+
 2. It differentiates between _static_(images and fonts) and _dynamic_(JavaScript, CSS, HTML, JSON) assets. They are treated differently:
 
    - for _static_ assets plugin uses [`StaleWhileRevalidate`](https://developers.google.com/web/tools/workbox/reference-docs/latest/module-workbox-strategies#stalewhilerevalidate) due to assumption that such resources are changed rarely.
