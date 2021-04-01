@@ -1,7 +1,5 @@
 import chalk, { Chalk } from 'chalk';
 
-import { time } from './time';
-
 /** Convert Error to string. */
 const errorToString = (error: Error) =>
   error.name + ': ' + error.message + '\n' + error.stack;
@@ -23,7 +21,7 @@ const log = (
 ) =>
   console.info(
     ' ' +
-      chalk.bgYellowBright(time()) +
+      chalk.bgYellowBright(new Date().toLocaleTimeString()) +
       ' -> ' +
       chalk.bold.gray(name) +
       ': ' +

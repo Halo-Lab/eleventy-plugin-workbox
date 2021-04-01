@@ -1,8 +1,12 @@
-# Unreleased
+# [1.1.1] - 2021-04-01
 
 ### Added
 
 - [TypeScript's definiton files](https://www.typescriptlang.org/docs/handbook/declaration-files/templates/module-d-ts.html).
+
+### Changed
+
+- Time log from custom format to default locale based one.
 
 ## [1.1.0] - 2021-03-31
 
