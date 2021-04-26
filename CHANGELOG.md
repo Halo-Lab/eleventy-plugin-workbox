@@ -1,4 +1,11 @@
-# [1.1.1] - 2021-04-01
+# [1.2.0] - 2021-04-26
+
+### Changed
+
+- Deprecate `buildDirectory` option.
+- Deprecate `serviceWorkerDirectory` option and add `publicDirectory` option in favour of it.
+
+## [1.1.1] - 2021-04-01
 
 ### Added
 

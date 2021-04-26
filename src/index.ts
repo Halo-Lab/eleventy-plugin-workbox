@@ -1,10 +1,12 @@
 import { join } from 'path';
 
+import chalk from 'chalk';
 import { generateSW, GenerateSWConfig } from 'workbox-build';
 
-import { done, oops } from './pretty';
 import { toMegabytes } from './to_megabytes';
 import { isProduction } from './mode';
+import { done, oops, warn } from './pretty';
+import { getBuildDirectory } from './path_stats';
 import { buildSWScriptRegistration } from './injectable_script';
 import {
   EXTENSIONS,
@@ -22,12 +24,22 @@ export interface EleventyPluginWorkboxOptions {
   /**
    * Tells where relative to _dir.output_ directory
    * service worker file must be placed.
+   *
+   * @deprecated in favour of _publicDirectory_.
    */
   serviceWorkerDirectory?: string;
+  /**
+   * Directory inside _output_ folder to be used as place for
+   * service worker.
+   */
+  publicDirectory?: string;
   /**
    * Name of the Eleventy's _build_ directory. Must
    * be the same value as _dir.output_. By default,
    * it is `_site`.
+   *
+   * @deprecated - plugin will detect _output_ directory
+   * by itself.
    */
   buildDirectory?: string;
   /**
@@ -55,30 +67,50 @@ export const cache = (
   config: Record<string, Function>,
   {
     enabled = isProduction(),
-    buildDirectory = '_site',
+    // TODO: remove in next minor release.
+    buildDirectory,
+    publicDirectory = '',
     generateSWOptions,
+    // TODO: remove in next minor release.
     serviceWorkerDirectory = '',
   }: EleventyPluginWorkboxOptions = {}
 ) => {
   if (enabled) {
-    const serviceWorkerPublicUrl = join(
-      serviceWorkerDirectory,
-      'service-worker.js'
-    );
+    if (serviceWorkerDirectory.length > 0) {
+      warn(
+        `${chalk.bold(
+          'serviceWorkerDirectory'
+        )} option is deprecated and will be removed. Please use ${chalk.bold(
+          'publicDirectory'
+        )} instead.`
+      );
+    }
+
+    if (buildDirectory !== undefined) {
+      warn(
+        `${chalk.bold(
+          'buildDirectory'
+        )} option is deprecated, has not impact on plugin and will be removed.`
+      );
+    }
+
+    const serviceWorkerPublicUrl = join(publicDirectory, 'service-worker.js');
+
+    // Holds name of output directory.
+    let outputDirectory: string;
 
     config.addTransform(
       'service-worker',
       (content: string, outputPath: string) => {
+        outputDirectory ??= getBuildDirectory(outputPath);
+
         if (outputPath.endsWith('html')) {
           const htmlWithServiceWorker = content.replace(
             '</head>',
             buildSWScriptRegistration(serviceWorkerPublicUrl) + '</head>'
           );
 
-          done(
-            PLUGIN_NAME,
-            'Service worker registration script is injected into HTML'
-          );
+          done('Service worker registration script is injected into HTML');
 
           return htmlWithServiceWorker;
         }
@@ -90,12 +122,12 @@ export const cache = (
     config.on('afterBuild', () =>
       generateSW({
         cacheId: 'EleventyPlugin' + PLUGIN_NAME,
-        swDest: join(buildDirectory, serviceWorkerPublicUrl),
+        swDest: join(outputDirectory, serviceWorkerPublicUrl),
         sourcemap: !isProduction(),
         skipWaiting: true,
         globPatterns: [`**/*.{${EXTENSIONS}}`],
         clientsClaim: true,
-        globDirectory: buildDirectory,
+        globDirectory: outputDirectory,
         inlineWorkboxRuntime: true,
         cleanupOutdatedCaches: true,
         runtimeCaching: [
@@ -112,12 +144,11 @@ export const cache = (
       }).then(
         ({ size, count }) =>
           done(
-            PLUGIN_NAME,
             `${count} files will be precached, totaling ${toMegabytes(
               size
             )} MB.`
           ),
-        (error) => oops(PLUGIN_NAME, error)
+        oops
       )
     );
   }
