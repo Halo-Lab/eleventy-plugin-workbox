@@ -7,8 +7,8 @@ const errorToString = (error: Error) =>
   error.name + ': ' + error.message + '\n' + error.stack;
 
 /**
- * Log _message_ binded with _name_ of the process
- * to teminal.
+ * Log _message_ bound with _name_ of the process
+ * to terminal.
  *
  * @param paint - function that paint _message_.
  * @param message
@@ -17,7 +17,7 @@ const errorToString = (error: Error) =>
 const log = (paint: Chalk, message: string | Error, emoji: string) =>
   console.info(
     ' ' +
-      chalk.bgYellowBright(new Date().toLocaleTimeString()) +
+      chalk.black.bgYellowBright(new Date().toLocaleTimeString()) +
       ' -> ' +
       chalk.bold.gray(PLUGIN_NAME) +
       ': ' +
@@ -41,7 +41,7 @@ export const start = (message: string) => log(chalk.green, message, '🆙');
 export const done = (message: string) => log(chalk.magenta, message, '🙌');
 
 /**
- * Alert about error that was occured during process execution.
+ * Alert about error that was occurred during process execution.
  *
  * @param message
  */

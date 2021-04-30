@@ -5,8 +5,8 @@ import { generateSW, GenerateSWConfig } from 'workbox-build';
 
 import { toMegabytes } from './to_megabytes';
 import { isProduction } from './mode';
-import { done, oops, warn } from './pretty';
 import { getBuildDirectory } from './path_stats';
+import { done, oops, start, warn } from './pretty';
 import { buildSWScriptRegistration } from './injectable_script';
 import {
   EXTENSIONS,
@@ -120,36 +120,40 @@ export const cache = (
     );
 
     config.on('afterBuild', () =>
-      generateSW({
-        cacheId: 'EleventyPlugin' + PLUGIN_NAME,
-        swDest: join(outputDirectory, serviceWorkerPublicUrl),
-        sourcemap: !isProduction(),
-        skipWaiting: true,
-        globPatterns: [`**/*.{${EXTENSIONS}}`],
-        clientsClaim: true,
-        globDirectory: outputDirectory,
-        inlineWorkboxRuntime: true,
-        cleanupOutdatedCaches: true,
-        runtimeCaching: [
-          {
-            handler: 'NetworkFirst',
-            urlPattern: new RegExp(`.+\\.(${DYNAMIC_FORMATS.join('|')})$`),
-          },
-          {
-            handler: 'StaleWhileRevalidate',
-            urlPattern: new RegExp(`.+\\.(${STATIC_FORMATS.join('|')}})$`),
-          },
-        ],
-        ...(generateSWOptions ?? {}),
-      }).then(
-        ({ size, count }) =>
-          done(
-            `${count} files will be precached, totaling ${toMegabytes(
-              size
-            )} MB.`
-          ),
-        oops
-      )
+      Promise.resolve(start('Generation of service worker was started.'))
+        .then(() =>
+          generateSW({
+            cacheId: 'EleventyPlugin' + PLUGIN_NAME,
+            swDest: join(outputDirectory, serviceWorkerPublicUrl),
+            sourcemap: !isProduction(),
+            skipWaiting: true,
+            globPatterns: [`**/*.{${EXTENSIONS}}`],
+            clientsClaim: true,
+            globDirectory: outputDirectory,
+            inlineWorkboxRuntime: true,
+            cleanupOutdatedCaches: true,
+            runtimeCaching: [
+              {
+                handler: 'NetworkFirst',
+                urlPattern: new RegExp(`.+\\.(${DYNAMIC_FORMATS.join('|')})$`),
+              },
+              {
+                handler: 'StaleWhileRevalidate',
+                urlPattern: new RegExp(`.+\\.(${STATIC_FORMATS.join('|')}})$`),
+              },
+            ],
+            ...(generateSWOptions ?? {}),
+          })
+        )
+        .then(
+          ({ size, count }) =>
+            done(
+              `${count} files will be precached, totaling ${toMegabytes(
+                size
+              )} MB.`
+            ),
+          oops
+        )
     );
   }
 };

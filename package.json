@@ -1,7 +1,7 @@
 {
   "name": "eleventy-plugin-workbox",
-  "version": "1.2.0",
-  "description": "Plugin for creating service worker that caches builded assets by Eleventy",
+  "version": "1.2.1",
+  "description": "Plugin for creating service worker that caches built assets by Eleventy",
   "main": "index.js",
   "exports": {
     ".": "./index.js",
@@ -19,7 +19,8 @@
     "copy:package": "cpy package.json build",
     "copy:readme": "cpy README.md build",
     "copy:license": "cpy LICENSE build",
-    "release": "npm run build; npm publish build/ --access public"
+    "prerelease": "npm run build",
+    "release": "npm publish build/ --access public"
   },
   "keywords": [
     "Eleventy",
@@ -30,7 +31,7 @@
   "license": "ISC",
   "peerDependencies": {
     "chalk": "^4.1.0",
-    "workbox-build": "^6.1.2"
+    "workbox-build": "^6.1.0"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.2.1",
