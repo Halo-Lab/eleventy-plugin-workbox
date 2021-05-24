@@ -23,4 +23,6 @@ export const STATIC_FORMATS = FONT_FORMATS.concat(IMAGE_FORMATS);
 /** List of extensions that must be cached by service worker. */
 export const EXTENSIONS = DYNAMIC_FORMATS.concat(STATIC_FORMATS);
 
-export const ONE_MEGABYTE_IN_BYTES = 1048576;
+// The definition recommended for the International System of Units (SI)
+// and by the International Electrotechnical Commission IEC.
+export const ONE_MEGABYTE_IN_BYTES = 1000000;

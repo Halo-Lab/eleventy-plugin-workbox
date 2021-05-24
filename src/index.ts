@@ -1,12 +1,12 @@
 import { join } from 'path';
 
-import chalk from 'chalk';
 import { generateSW, GenerateSWConfig } from 'workbox-build';
 
 import { toMegabytes } from './to_megabytes';
+import { joinUrlParts } from './url';
 import { isProduction } from './mode';
 import { getBuildDirectory } from './path_stats';
-import { done, oops, start, warn } from './pretty';
+import { done, oops, start } from './pretty';
 import { buildSWScriptRegistration } from './injectable_script';
 import {
   EXTENSIONS,
@@ -22,26 +22,10 @@ export interface EleventyPluginWorkboxOptions {
    */
   generateSWOptions?: GenerateSWConfig;
   /**
-   * Tells where relative to _dir.output_ directory
-   * service worker file must be placed.
-   *
-   * @deprecated in favour of _publicDirectory_.
-   */
-  serviceWorkerDirectory?: string;
-  /**
    * Directory inside _output_ folder to be used as place for
    * service worker.
    */
   publicDirectory?: string;
-  /**
-   * Name of the Eleventy's _build_ directory. Must
-   * be the same value as _dir.output_. By default,
-   * it is `_site`.
-   *
-   * @deprecated - plugin will detect _output_ directory
-   * by itself.
-   */
-  buildDirectory?: string;
   /**
    * Tells if plugin should generate service worker.
    * Useful for situations when there is a need to test service worker,
@@ -67,34 +51,15 @@ export const cache = (
   config: Record<string, Function>,
   {
     enabled = isProduction(),
-    // TODO: remove in next minor release.
-    buildDirectory,
     publicDirectory = '',
     generateSWOptions,
-    // TODO: remove in next minor release.
-    serviceWorkerDirectory = '',
   }: EleventyPluginWorkboxOptions = {}
 ) => {
   if (enabled) {
-    if (serviceWorkerDirectory.length > 0) {
-      warn(
-        `${chalk.bold(
-          'serviceWorkerDirectory'
-        )} option is deprecated and will be removed. Please use ${chalk.bold(
-          'publicDirectory'
-        )} instead.`
-      );
-    }
-
-    if (buildDirectory !== undefined) {
-      warn(
-        `${chalk.bold(
-          'buildDirectory'
-        )} option is deprecated, has not impact on plugin and will be removed.`
-      );
-    }
-
-    const serviceWorkerPublicUrl = join(publicDirectory, 'service-worker.js');
+    const serviceWorkerPublicUrl = joinUrlParts(
+      publicDirectory,
+      'service-worker.js'
+    );
 
     // Holds name of output directory.
     let outputDirectory: string;

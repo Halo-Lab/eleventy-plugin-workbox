@@ -1,3 +1,5 @@
+import { makeRootUrl } from './url';
+
 /**
  * Build script for service worker registration
  * that will be injected into HTML.
@@ -11,7 +13,9 @@ export const buildSWScriptRegistration = (
       <script>
         if ("serviceWorker" in window.navigator) {
           window.addEventListener("load", () =>
-            window.navigator.serviceWorker.register("${publicUrl}"),
+            window.navigator.serviceWorker.register("${makeRootUrl(
+              publicUrl
+            )}"),
           );
         }
       </script>`;

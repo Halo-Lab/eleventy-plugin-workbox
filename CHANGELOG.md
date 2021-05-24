@@ -1,4 +1,19 @@
-# [1.2.1] - 2021-04-30
+# [1.2.2] - 2021-05-24
+
+### Change
+
+- Value of 1 megabyte in bytes according to International System of Units recommendation.
+
+### Fixed
+
+- Creating public path of service worker from root of site.
+- Creating public url for service worker manifest on Windows may use `\` as separator.
+
+### Removed
+
+- Deprecated `serviceWorkerDirectory` and `buildDirectory` properties of plugin options.
+
+## [1.2.1] - 2021-04-30
 
 ### Added
 

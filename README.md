@@ -44,26 +44,10 @@ interface EleventyPluginWorkboxOptions {
    */
   generateSWOptions?: GenerateSWConfig;
   /**
-   * Tells where relative to _dir.output_ directory
-   * service worker file must be placed.
-   *
-   * @deprecated - use _publicDirectory_ instead.
-   */
-  serviceWorkerDirectory?: string;
-  /**
    * Directory inside _output_ folder to be used as place for
    * service worker.
    */
   publicDirectory?: string;
-  /**
-   * Name of the Eleventy's _build_ directory. Must
-   * be the same value as _dir.output_. By default,
-   * it is `_site`.
-   *
-   * @deprecated - plugin will figure _output_folder
-   * by itself.
-   */
-  buildDirectory?: string;
   /**
    * Tells if plugin should generate service worker.
    * Useful for situations when there is a need to test service worker,
