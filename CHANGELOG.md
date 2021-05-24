@@ -1,4 +1,10 @@
-# [1.2.2] - 2021-05-24
+# [1.3.0] - 2021-05-24
+
+### Changed
+
+- By default, all URLs are precached by workbox as absolute now.
+
+## [1.2.2] - 2021-05-24
 
 ### Change
 

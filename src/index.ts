@@ -7,6 +7,7 @@ import { joinUrlParts } from './url';
 import { isProduction } from './mode';
 import { getBuildDirectory } from './path_stats';
 import { done, oops, start } from './pretty';
+import { makeManifestURlsAbsolute } from './transform_entries';
 import { buildSWScriptRegistration } from './injectable_script';
 import {
   EXTENSIONS,
@@ -107,6 +108,7 @@ export const cache = (
                 urlPattern: new RegExp(`.+\\.(${STATIC_FORMATS.join('|')}})$`),
               },
             ],
+            manifestTransforms: [makeManifestURlsAbsolute],
             ...(generateSWOptions ?? {}),
           })
         )

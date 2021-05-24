@@ -76,6 +76,8 @@ interface EleventyPluginWorkboxOptions {
 
 > Note: if you will also use [`afterBuild` event](https://www.11ty.dev/docs/events/#afterbuild) to write some logic, be sure that your plugin is added before this plugin. Otherwise there may be inconsistencies in cached resources, if your plugin somehow changes them.
 
+4. It precaches URLs as absolute from root of site. It is very handy when Eleventy makes many directories for HTML files and you have only one place for each type of asset.
+
 ## Word from author
 
 Have fun! ✌️
