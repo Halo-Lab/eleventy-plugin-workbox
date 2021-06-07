@@ -26,3 +26,5 @@ export const EXTENSIONS = DYNAMIC_FORMATS.concat(STATIC_FORMATS);
 // The definition recommended for the International System of Units (SI)
 // and by the International Electrotechnical Commission IEC.
 export const ONE_MEGABYTE_IN_BYTES = 1000000;
+
+export const URL_DELIMITER = '/';

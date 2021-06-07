@@ -49,6 +49,10 @@ interface EleventyPluginWorkboxOptions {
    */
   publicDirectory?: string;
   /**
+   * Scope for service worker.
+   */
+  scope?: string;
+  /**
    * Tells if plugin should generate service worker.
    * Useful for situations when there is a need to test service worker,
    * especially in development process.
@@ -58,6 +62,8 @@ interface EleventyPluginWorkboxOptions {
   enabled?: boolean;
 }
 ```
+
+> If your templates are generated into `index.html` files, then you can refer them with a directory name. In that case you **should** append `/` to directory name. Without it service worker can not reach `index.html` files.
 
 ### What's special?
 

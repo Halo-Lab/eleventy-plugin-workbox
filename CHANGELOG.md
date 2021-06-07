@@ -1,4 +1,14 @@
-# [1.3.0] - 2021-05-24
+# [1.4.0] - 2021-06-07
+
+### Added
+
+- Ability to define [scope for service worker](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/register).
+
+### Fixed
+
+- _urlPattern_ in `StaleWhileRevalidate` strategy.
+
+## [1.3.0] - 2021-05-24
 
 ### Changed
 

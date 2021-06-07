@@ -6,14 +6,14 @@ import { toMegabytes } from './to_megabytes';
 import { joinUrlParts } from './url';
 import { isProduction } from './mode';
 import { getBuildDirectory } from './path_stats';
-import { done, oops, start } from './pretty';
+import { bold, done, oops, start } from './pretty';
 import { makeManifestURlsAbsolute } from './transform_entries';
 import { buildSWScriptRegistration } from './injectable_script';
 import {
   EXTENSIONS,
   PLUGIN_NAME,
   STATIC_FORMATS,
-  DYNAMIC_FORMATS,
+  URL_DELIMITER,
 } from './constants';
 
 export interface EleventyPluginWorkboxOptions {
@@ -27,6 +27,10 @@ export interface EleventyPluginWorkboxOptions {
    * service worker.
    */
   publicDirectory?: string;
+  /**
+   * Scope for service worker.
+   */
+  scope?: string;
   /**
    * Tells if plugin should generate service worker.
    * Useful for situations when there is a need to test service worker,
@@ -51,6 +55,7 @@ export const cache = (
   /** Eleventy config object. */
   config: Record<string, Function>,
   {
+    scope = URL_DELIMITER,
     enabled = isProduction(),
     publicDirectory = '',
     generateSWOptions,
@@ -67,16 +72,24 @@ export const cache = (
 
     config.addTransform(
       'service-worker',
-      (content: string, outputPath: string) => {
-        outputDirectory ??= getBuildDirectory(outputPath);
+      function (
+        this: { outputPath: string },
+        content: string,
+        outputPath: string
+      ) {
+        outputDirectory ??= getBuildDirectory(this.outputPath ?? outputPath);
 
         if (outputPath.endsWith('html')) {
           const htmlWithServiceWorker = content.replace(
             '</head>',
-            buildSWScriptRegistration(serviceWorkerPublicUrl) + '</head>'
+            buildSWScriptRegistration(serviceWorkerPublicUrl, scope) + '</head>'
           );
 
-          done('Service worker registration script is injected into HTML');
+          done(
+            `Service worker registration script is injected into "${bold(
+              outputPath
+            )}"`
+          );
 
           return htmlWithServiceWorker;
         }
@@ -86,26 +99,45 @@ export const cache = (
     );
 
     config.on('afterBuild', () =>
-      Promise.resolve(start('Generation of service worker was started.'))
+      Promise.resolve(start('Generation of service worker has started.'))
         .then(() =>
           generateSW({
             cacheId: 'EleventyPlugin' + PLUGIN_NAME,
             swDest: join(outputDirectory, serviceWorkerPublicUrl),
             sourcemap: !isProduction(),
             skipWaiting: true,
-            globPatterns: [`**/*.{${EXTENSIONS}}`],
+            globPatterns: [`*.{${EXTENSIONS}}`, `**/*.{${EXTENSIONS}}`],
             clientsClaim: true,
+            directoryIndex: 'index.html',
             globDirectory: outputDirectory,
             inlineWorkboxRuntime: true,
             cleanupOutdatedCaches: true,
             runtimeCaching: [
               {
                 handler: 'NetworkFirst',
-                urlPattern: new RegExp(`.+\\.(${DYNAMIC_FORMATS.join('|')})$`),
+                urlPattern: ({ url }: { url: string }) =>
+                  !new RegExp(
+                    `.+\\.(?:${[
+                      'jpg',
+                      'png',
+                      'gif',
+                      'ico',
+                      'svg',
+                      'jpeg',
+                      'avif',
+                      'webp',
+                      'eot',
+                      'ttf',
+                      'otf',
+                      'ttc',
+                      'woff',
+                      'woff2',
+                    ].join('|')})`
+                  ).test(url),
               },
               {
                 handler: 'StaleWhileRevalidate',
-                urlPattern: new RegExp(`.+\\.(${STATIC_FORMATS.join('|')}})$`),
+                urlPattern: new RegExp(`.+\\.(?:${STATIC_FORMATS.join('|')})$`),
               },
             ],
             manifestTransforms: [makeManifestURlsAbsolute],
@@ -115,8 +147,8 @@ export const cache = (
         .then(
           ({ size, count }) =>
             done(
-              `${count} files will be precached, totaling ${toMegabytes(
-                size
+              `${bold(count)} files will be precached, totaling ${bold(
+                toMegabytes(size)
               )} MB.`
             ),
           oops

@@ -49,3 +49,5 @@ export const oops = (message: string | Error) => log(chalk.red, message, '💥')
 
 /** Shows warning message. */
 export const warn = (message: string) => log(chalk.blue, message, '❗️');
+
+export const bold = chalk.bold;
