@@ -12,8 +12,8 @@ import { buildSWScriptRegistration } from './injectable_script';
 import {
   EXTENSIONS,
   PLUGIN_NAME,
-  STATIC_FORMATS,
   URL_DELIMITER,
+  STATIC_FORMATS,
 } from './constants';
 
 export interface EleventyPluginWorkboxOptions {
@@ -87,7 +87,7 @@ export const cache = (
 
           done(
             `Service worker registration script is injected into "${bold(
-              outputPath
+              this.outputPath ?? outputPath
             )}"`
           );
 

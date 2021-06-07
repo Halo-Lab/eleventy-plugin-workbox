@@ -50,6 +50,7 @@ interface EleventyPluginWorkboxOptions {
   publicDirectory?: string;
   /**
    * Scope for service worker.
+   * Default `/`.
    */
   scope?: string;
   /**
@@ -57,7 +58,7 @@ interface EleventyPluginWorkboxOptions {
    * Useful for situations when there is a need to test service worker,
    * especially in development process.
    *
-   * By default it is enabled if `NODE_ENV === 'production'`.
+   * By default, it is enabled if `NODE_ENV === 'production'`.
    */
   enabled?: boolean;
 }
